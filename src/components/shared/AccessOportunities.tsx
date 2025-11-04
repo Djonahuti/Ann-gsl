@@ -100,7 +100,18 @@ export default function AccessOpportunities() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Button className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-lg py-7 rounded-xl shadow-lg">
+            <Button
+             onClick={() => {
+                const el = document.getElementById('contact')
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                } else {
+                  // fallback to route if section id is not present
+                  window.location.href = '/'
+                }
+              }}
+             className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-lg py-7 rounded-xl shadow-lg"
+              >
                 Contact Us Now!
               </Button>
             </motion.div>

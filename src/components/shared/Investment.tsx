@@ -119,7 +119,18 @@ export default function Investment() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <Button className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-6 rounded-xl shadow-md">
+              <Button
+               onClick={() => {
+                const el = document.getElementById('contact')
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                } else {
+                  // fallback to route if section id is not present
+                  window.location.href = '/'
+                }
+              }}
+               className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-6 rounded-xl shadow-md"
+              >
                 Contact Us Now
               </Button>
             </motion.div>
@@ -145,7 +156,7 @@ export default function Investment() {
               className="mt-8 text-center"
             >
               <a
-                href="/contact"
+                href="https://wa.me/+2348093183556?text=I%27d%20like%20to%20know%20more%20about%20your%20investment%20opportunities."
                 className="inline-flex items-center gap-2 px-6 py-3 border-2 border-purple-300 rounded-full text-purple-700 font-medium hover:bg-purple-50 transition"
               >
                 Chat with us on WhatsApp
