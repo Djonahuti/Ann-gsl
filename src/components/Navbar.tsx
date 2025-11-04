@@ -53,7 +53,7 @@ export default function Navbar() {
           : "mx-auto px-6 py-5 flex items-center justify-between text-white backdrop-blur-sm bg-black/20"
       }>
         <div className="flex items-center gap-4">
-          <img src={isSticky ? "/ann.png" : "/logo.png"} alt="Annhurst GSL" className="h-20 w-auto transition-all duration-300" />
+          <img src={isSticky ? "/ann.png" : "/logo.png"} alt="Annhurst GSL" className="h-10 w-auto transition-all duration-300" />
         </div>
 
         <ul className="hidden md:flex items-center gap-8 text-sm">
