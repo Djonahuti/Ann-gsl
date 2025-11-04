@@ -252,25 +252,25 @@ export default function ContactCTA() {
                             <SelectLabel>Services</SelectLabel>
                             <SelectItem
                               value="higher-purchase"
-                              className="data-[state=checked]:bg-primary data-[state=checked]:text-gray-200 data-highlighted:bg-primary-light data-highlighted:text-gray-200"
+                              className="data-[state=checked]:bg-red-600 data-[state=checked]:text-gray-200 data-highlighted:bg-red-500 data-highlighted:text-gray-200"
                             >
                               Bus Higher Purchase
                             </SelectItem>
                             <SelectItem
                               value="fleet-management"
-                              className="data-[state=checked]:bg-primary data-[state=checked]:text-gray-200 data-highlighted:bg-primary-light data-highlighted:text-gray-200"
+                              className="data-[state=checked]:bg-red-600 data-[state=checked]:text-gray-200 data-highlighted:bg-red-500 data-highlighted:text-gray-200"
                             >
                               Fleet Management
                             </SelectItem>
                             <SelectItem
                               value="consulting"
-                              className="data-[state=checked]:bg-primary data-[state=checked]:text-gray-200 data-highlighted:bg-primary-light data-highlighted:text-gray-200"
+                              className="data-[state=checked]:bg-red-600 data-[state=checked]:text-gray-200 data-highlighted:bg-red-500 data-highlighted:text-gray-200"
                             >
                               Business Consulting
                             </SelectItem>
                             <SelectItem
                               value="other"
-                              className="data-[state=checked]:bg-primary data-[state=checked]:text-gray-200 data-highlighted:bg-primary-light data-highlighted:text-gray-200"
+                              className="data-[state=checked]:bg-red-600 data-[state=checked]:text-gray-200 data-highlighted:bg-red-500 data-highlighted:text-gray-200"
                             >
                               Other Services
                             </SelectItem>
