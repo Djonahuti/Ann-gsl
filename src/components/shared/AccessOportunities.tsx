@@ -47,9 +47,6 @@ export default function AccessOpportunities() {
           className="relative"
         >
           <Card className="p-10 shadow-2xl bg-white/90 backdrop-blur-lg border border-purple-100 hover:shadow-3xl transition-shadow">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">
-              Our Text:
-            </h3>
 
             <div className="space-y-6 mb-8">
               <motion.div
