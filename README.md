@@ -1,73 +1,76 @@
-# React + TypeScript + Vite
+# Annhurst Global Solutions Limited
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern investment and bus hire-purchase platform connecting investors with opportunities in the transportation sector.
 
-Currently, two official plugins are available:
+![Annhurst GSL](public/ann.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## About
 
-## React Compiler
+Annhurst GSL is a leading investment and fleet management company specializing in:
+- Bus Hire Purchase Programs
+- Fleet Management Solutions
+- Investment Opportunities
+- Business Consulting
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+### For Investors
+- Access to curated investment opportunities in the transportation sector
+- Transparent investment tracking
+- Professional portfolio management
+- Competitive returns on investment
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### For Bus Operators
+- Flexible hire-purchase options
+- Cost-friendly payment plans
+- Fleet management support
+- Business growth consultation
+- No hidden charges
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Why Choose Annhurst GSL?
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Affordable Entry**: Cost-friendly hire-purchase plans designed for both small and large operators
+- **Professional Support**: Expert guidance throughout your investment or hire-purchase journey
+- **Transparency**: Clear terms, no hidden fees
+- **Growth Focused**: Helping transport businesses scale efficiently
+- **Experience**: Years of expertise in the Nigerian transportation sector
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Contact
+
+- **Phone**: +234 809 318 3556 | +234 816 746 2350
+- **Email**: customerservices@annhurst-gsl.com | info@annhurst-gsl.com
+- **Location**: 13B Obafemi Anibaba, Admiralty Way Lekki, Lagos, Nigeria
+
+## Getting Started
+
+1. Visit our website
+2. Choose your interest (Investment or Hire Purchase)
+3. Fill out the contact form
+4. Our team will reach out within 24 hours
+
+## Business Hours
+
+- Monday - Friday: 8:00 AM - 6:00 PM
+- Saturday: 9:00 AM - 2:00 PM
+- Sunday: Closed
+
+## Related Services
+
+- [Annhurst Transport](https://annhurst-ts.com) - Our transportation service division
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## License
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+© 2025 Annhurst Global Solutions Limited. All rights reserved.
