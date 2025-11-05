@@ -79,16 +79,23 @@ export default function ContactCTA() {
       if (sbError) throw sbError;
 
       // 2. Save to Google Sheets + Auto-Email 
+      // *** MODIFICATION: Removed 'mode: "cors"' as it's the default and can sometimes interfere. ***
       const res = await fetch(GOOGLE_SHEET_URL, {
         method: "POST",
-        mode: "cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
-      if (!res.ok) throw new Error("Network error");
+      if (!res.ok) throw new Error(`Network error: ${res.status} ${res.statusText}`);
+      
       const result = await res.json();
-      if (result.status !== "success") throw new Error("Google Sheets failed");
+      
+      // *** MODIFICATION: Check for the new status property from Code.gs ***
+      if (result.status !== "success") {
+         // Log the error message returned from the Apps Script for better debugging
+         console.error("Google Sheets App Script failed:", result.message || result.error);
+         throw new Error("Google Sheets App Script failed");
+      }
 
       toast.success("Message sent! Check your email for confirmation.");
       reset();

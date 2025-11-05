@@ -3,6 +3,7 @@ import PublicLayout from "./layouts/PublicLayout";
 import { Route, Routes } from "react-router-dom";
 import { SupabaseProvider } from "./contexts/SupabaseContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { Toaster } from "sonner";
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
           </Route>  
-        </Routes>        
+        </Routes> 
+        <Toaster position="top-right" richColors />       
       </div>
     </AuthProvider>
    </SupabaseProvider> 
