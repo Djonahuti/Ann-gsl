@@ -78,22 +78,24 @@ export default function ContactCTA() {
 
       if (sbError) throw sbError;
 
-      // 2. Save to Google Sheets + Auto-Email 
-      // *** MODIFICATION: Removed 'mode: "cors"' as it's the default and can sometimes interfere. ***
+      // 2. Prepare data for Google Sheets in URL-encoded format
+      // This bypasses the CORS preflight request (OPTIONS)
+      const urlEncodedData = new URLSearchParams(data as unknown as Record<string, string>).toString();
+
       const res = await fetch(GOOGLE_SHEET_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        // CRITICAL CHANGE: Use standard form content type for simple request
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: urlEncodedData,
       });
 
       if (!res.ok) throw new Error(`Network error: ${res.status} ${res.statusText}`);
       
       const result = await res.json();
       
-      // *** MODIFICATION: Check for the new status property from Code.gs ***
+      // Check for the status property from Code.gs
       if (result.status !== "success") {
-         // Log the error message returned from the Apps Script for better debugging
-         console.error("Google Sheets App Script failed:", result.message || result.error);
+         console.error("Google Sheets App Script failed:", result.message || result.details);
          throw new Error("Google Sheets App Script failed");
       }
 

@@ -9,7 +9,7 @@ function App() {
   return (
    <SupabaseProvider>
     <AuthProvider>
-      <div className="min-h-screen bg-background">
+      <div>
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<PublicLayout />}>
