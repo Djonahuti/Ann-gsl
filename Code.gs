@@ -26,12 +26,39 @@ function doOptions() {
  * Processes data, saves to Sheet, and sends an auto-reply email.
  */
 function doPost(e) {
+  // ----------------------------------------------------------------------
+  // ** FIX FOR MANUAL RUNS IN EDITOR **
+  // If 'e' is undefined (because the function was run directly in the editor), 
+  // we exit gracefully with a message.
+  if (!e || (!e.parameter && !e.postData)) {
+      Logger.log("doPost executed without valid event object 'e'. If this was a manual test, this is expected.");
+      return createResponse({ 
+          status: "warning", 
+          message: "Function executed manually without data. Please deploy as a Web App to test fully." 
+      });
+  }
+  // ----------------------------------------------------------------------
+    
   try {
     // Attempt to get or create the spreadsheet dynamically.
     const ss = getOrCreateSpreadsheet();
 
-    // 1. Parse Data
-    const data = e?.postData?.contents ? JSON.parse(e.postData.contents) : {};
+    // 1. Parse Data (READS URL-ENCODED DATA)
+    let data;
+    // We already confirmed e exists above, now check data type
+    if (e.postData && e.postData.type === "application/x-www-form-urlencoded") {
+      // Data is in e.parameter when application/x-www-form-urlencoded is used
+      data = e.parameter; 
+    } else if (e.postData && e.postData.type === "application/json" && e.postData.contents) {
+      // Fallback for JSON in case you switch back
+      data = JSON.parse(e.postData.contents);
+    } else {
+      // If e exists but data format is unexpected
+      throw new Error("Invalid or missing post data in POST request.");
+    }
+    
+    // Convert newsletter to boolean if it came as string "true" or "false"
+    const newsletterValue = (data.newsletter === "true" || data.newsletter === true);
 
     // 2. Save to Sheets
     let sheet = ss.getSheetByName(SHEET_NAME);
@@ -54,7 +81,7 @@ function doPost(e) {
       data.message || '',
       data.service || '',
       data.company || '',
-      data.newsletter ? "Yes" : "No"
+      newsletterValue ? "Yes" : "No"
     ]);
 
     // 3. Auto-email
