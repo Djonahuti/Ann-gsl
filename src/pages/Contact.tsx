@@ -14,27 +14,34 @@ import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
+// SECURE: Read from .env
+const GOOGLE_SHEET_URL = import.meta.env.VITE_GOOGLE_WEB_APP_URL;
+
+if (!GOOGLE_SHEET_URL) {
+  console.error("VITE_GOOGLE_WEB_APP_URL is missing in .env");
+}
+
 const contactSchema = z.object({
   name: z.string().min(2, "Name too short"),
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Invalid email"),
   phone: z.string().min(10, "Valid phone required"),
-  company: z.string().optional(),  
+  company: z.string().optional(),
   service: z.string().optional(),
-  subject: z.string().optional(),
-  message: z.string().min(5, "Message must be at least 5 characters"),
+  message: z.string().min(5, "Message too short"),
   newsletter: z.boolean(),
 });
 
-type ContactFormData = z.infer<typeof contactSchema>
+type ContactFormData = z.infer<typeof contactSchema>;
 
 export default function ContactCTA() {
   const { control, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
-      service: "higher-purchase",
-      newsletter: false
+      service: "bus-hire-purchase",
+      newsletter: false,
+      company: "",
     }
-  })
+  });
 
   const [showTopBtn, setShowTopBtn] = useState(false);
   useEffect(() => {
@@ -50,32 +57,46 @@ export default function ContactCTA() {
   }, []);
 
   const onSubmit = async (data: ContactFormData) => {
+    if (!GOOGLE_SHEET_URL) {
+      toast.error("Form not configured. Contact admin.");
+      return;
+    }
+
     try {
-      const { error } = await supabase.from("contact_us").insert([
-        {
+      // 1. Save to Supabase
+      const { error: sbError } = await supabase
+        .from("contact_us")
+        .insert([{
           name: data.name,
           email: data.email,
           phone: data.phone,
           company: data.company,
-          subject: data.subject ?? data.service,
+          subject: data.service,
           message: data.message,
           newsletter: data.newsletter,
-        }
-      ])
+        }]);
 
-      if (error) {
-        console.error(error)
-        toast.error("Something went wrong. Please try again.")
-        return
-      }
+      if (sbError) throw sbError;
 
-      toast.success("Message sent successfully! We'll get back to you soon.")
-      reset()
+      // 2. Save to Google Sheets + Auto-Email
+      const res = await fetch(GOOGLE_SHEET_URL, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) throw new Error("Network error");
+      const result = await res.json();
+      if (result.status !== "success") throw new Error("Google Sheets failed");
+
+      toast.success("Message sent! Check your email for confirmation.");
+      reset();
     } catch (err) {
-      console.error(err)
-      toast.error("Unexpected error occurred.")
+      console.error("Submission failed:", err);
+      toast.error("Failed to send. Please call us directly: +234 809 348 7556");
     }
-  }
+  };
 
   return (
     <section className="py-24 px-6 bg-linear-to-b from-gray-50 to-white">
@@ -184,96 +205,34 @@ export default function ContactCTA() {
               </p>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div>
-                  <Label htmlFor="name">Full Name *</Label>
+                {["name", "email", "phone", "company"].map((field) => (
+                  <div key={field}>
+                    <Label>{field === "company" ? "Company (Optional)" : field.charAt(0).toUpperCase() + field.slice(1)} {field !== "company" && "*"}</Label>
                     <Controller
-                      name="name"
+                      name={field as keyof ContactFormData}
                       control={control}
-                      render={({ field }) => (
-                        <Input id="name" {...field} className="mt-2" />
-                      )}
+                      render={({ field: f }) => <Input {...f} value={String(f.value || "")} className="mt-2" placeholder={field === "phone" ? "+234..." : ""} />}
                     />
-                  {errors.name && (
-                    <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="email">Email Address *</Label>
-                    <Controller
-                      name="email"
-                      control={control}
-                      render={({ field }) => (
-                        <Input id="email" type="email" {...field} className="mt-2" />
-                      )}
-                    />
-                  {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="phone">Phone Number</Label>
-                    <Controller
-                      name="phone"
-                      control={control}
-                      render={({ field }) => (
-                        <Input id="phone" type="tel" {...field} className="mt-2" />
-                      )}
-                    />
-                  {errors.phone && (
-                    <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="company">Company Name</Label>
-                  <Controller
-                    name="company"
-                    control={control}
-                    render={({ field }) => (
-                      <Input id="company" type="text" {...field} className="mt-2" />
+                    {errors[field as keyof typeof errors] && (
+                      <p className="text-red-500 text-sm mt-1">{(errors[field as keyof typeof errors] as any)?.message}</p>
                     )}
-                  />
-                </div>
+                  </div>
+                ))}
 
                 <div>
-                  <Label htmlFor="service">Investment Interest</Label>
+                  <Label>Investment Interest</Label>
                   <Controller
                     name="service"
                     control={control}
                     render={({ field }) => (
                       <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="mt-2 w-full">
-                          <SelectValue placeholder="Select a service" />
-                        </SelectTrigger>
+                        <SelectTrigger className="mt-2"><SelectValue placeholder="Choose one" /></SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectLabel>Services</SelectLabel>
-                            <SelectItem
-                              value="higher-purchase"
-                              className="data-[state=checked]:bg-red-600 data-[state=checked]:text-gray-200 data-highlighted:bg-red-500 data-highlighted:text-gray-200"
-                            >
-                              Bus Higher Purchase
-                            </SelectItem>
-                            <SelectItem
-                              value="fleet-management"
-                              className="data-[state=checked]:bg-red-600 data-[state=checked]:text-gray-200 data-highlighted:bg-red-500 data-highlighted:text-gray-200"
-                            >
-                              Fleet Management
-                            </SelectItem>
-                            <SelectItem
-                              value="consulting"
-                              className="data-[state=checked]:bg-red-600 data-[state=checked]:text-gray-200 data-highlighted:bg-red-500 data-highlighted:text-gray-200"
-                            >
-                              Business Consulting
-                            </SelectItem>
-                            <SelectItem
-                              value="other"
-                              className="data-[state=checked]:bg-red-600 data-[state=checked]:text-gray-200 data-highlighted:bg-red-500 data-highlighted:text-gray-200"
-                            >
-                              Other Services
-                            </SelectItem>
+                            <SelectLabel>Our Services</SelectLabel>
+                            {["Bus Hire Purchase", "Fleet Management", "Business Consulting", "Other"].map((s) => (
+                              <SelectItem key={s} value={s.toLowerCase().replace(/ /g, "-")}>{s}</SelectItem>
+                            ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -282,33 +241,24 @@ export default function ContactCTA() {
                 </div>
 
                 <div>
-                  <Label htmlFor="message">Message *</Label>
+                  <Label>Message *</Label>
                   <Controller
                     name="message"
                     control={control}
-                    render={({ field }) => (
-                      <Textarea id="message" rows={6} {...field} className="mt-2" />
-                    )}
+                    render={({ field }) => <Textarea {...field} value={field.value || ""} rows={5} className="mt-2" placeholder="How can we help you grow?" />}
                   />
-                  {errors.message && (
-                    <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>
-                  )}
+                  {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>}
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="newsletter"
-                    onCheckedChange={(checked) => setValue("newsletter", checked === true)}
-                  />
-                  <Label htmlFor="newsletter" className="text-sm font-normal cursor-pointer">
-                    Subscribe to our newsletter for investment updates and opportunities
-                  </Label>
+                <div className="flex items-center gap-3">
+                  <Checkbox id="newsletter" onCheckedChange={(c) => setValue("newsletter", c === true)} />
+                  <Label htmlFor="newsletter" className="text-sm cursor-pointer">Send me investment updates</Label>
                 </div>
 
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-6 text-lg rounded-xl shadow-lg"
+                  disabled={isSubmitting || !GOOGLE_SHEET_URL}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-6 rounded-xl shadow-lg"
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
