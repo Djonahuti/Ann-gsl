@@ -78,7 +78,7 @@ export default function ContactCTA() {
 
       if (sbError) throw sbError;
 
-      // 2. Save to Google Sheets + Auto-Email
+      // 2. Save to Google Sheets + Auto-Email 
       const res = await fetch(GOOGLE_SHEET_URL, {
         method: "POST",
         mode: "cors",
