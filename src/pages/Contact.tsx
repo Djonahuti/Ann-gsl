@@ -63,7 +63,7 @@ export default function ContactCTA() {
     }
 
     try {
-      // 1. Save to Supabase tables
+      // 1. Save to Supabase
       const { error: sbError } = await supabase
         .from("contact_us")
         .insert([{
