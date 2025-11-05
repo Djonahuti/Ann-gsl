@@ -1,6 +1,8 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { IconBrandFacebook, IconBrandInstagram, IconBrandX } from '@tabler/icons-react';
+import { Avatar, AvatarImage } from "./ui/avatar";
 
 export default function Footer() {
   return (
@@ -29,20 +31,81 @@ export default function Footer() {
               investment, and tailored business solutions that deliver
               exceptional returns.
             </p>
-            <div className="flex space-x-4 pt-4">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-brand-facebook"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 2a1 1 0 0 1 .993 .883l.007 .117v4a1 1 0 0 1 -.883 .993l-.117 .007h-3v1h3a1 1 0 0 1 .991 1.131l-.02 .112l-1 4a1 1 0 0 1 -.858 .75l-.113 .007h-2v6a1 1 0 0 1 -.883 .993l-.117 .007h-4a1 1 0 0 1 -.993 -.883l-.007 -.117v-6h-2a1 1 0 0 1 -.993 -.883l-.007 -.117v-4a1 1 0 0 1 .883 -.993l.117 -.007h2v-1a6 6 0 0 1 5.775 -5.996l.225 -.004h3z" /></svg>
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-brand-instagram"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 8a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" /><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /><path d="M16.5 7.5v.01" /></svg>
-              </a>
-            </div>
+          <div className="flex justify-item-between space-x-3">
+            <a
+             href="https://x.com/i/flow/login?redirect_after_login=%2FAnnhurstGSL" 
+             className="text-center"
+             target="_blank"
+             rel="noopener noreferrer"
+            >
+              <p className='mx-auto h-9 w-9 bg-linear-to-b from-red-500 to-red-500/80 shadow-md shadow-red-500/30 rounded-full flex items-center justify-center relative overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50'>
+                  {/* Glossy highlight overlay */}
+                <span
+                  className="
+                    absolute inset-0
+                    bg-linear-to-t from-transparent via-white/30 to-white/70
+                    opacity-40
+                    rounded-full
+                  "
+                ></span>
+                <IconBrandX stroke={2} className='h-5 w-5 text-white relative z-10' />
+              </p>
+            </a>
+
+            <a
+             href="https://web.facebook.com/people/Annhurst-Global-Services/100068235036574/?_rdc=1&_rdr#" 
+             className="text-center"
+             target="_blank"
+             rel="noopener noreferrer"
+            >
+              <p className='mx-auto h-9 w-9 bg-linear-to-b from-red-500 to-red-500/80 shadow-md shadow-red-500/30 rounded-full flex items-center justify-center relative overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50'>
+                  {/* Glossy highlight overlay */}
+                <span
+                  className="
+                    absolute inset-0
+                    bg-linear-to-t from-transparent via-white/30 to-white/70
+                    opacity-40
+                    rounded-full
+                  "
+                ></span>
+                <IconBrandFacebook className='h-5 w-5 text-white relative z-10' />
+              </p>
+            </a>
+
+            <a
+             href="https://www.instagram.com/annhurst_transport_services/" 
+             className="text-center"
+             target="_blank"
+             rel="noopener noreferrer"
+            >
+              <p className='mx-auto h-9 w-9 bg-linear-to-b from-red-500 to-red-500/80 shadow-md shadow-red-500/30 rounded-full flex items-center justify-center relative overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50'>
+                  {/* Glossy highlight overlay */}
+                <span
+                  className="
+                    absolute inset-0
+                    bg-linear-to-t from-transparent via-white/30 to-white/70
+                    opacity-40
+                    rounded-full
+                  "
+                ></span>
+                <IconBrandInstagram stroke={2} className='h-5 w-5 text-white relative z-10' />
+              </p>
+            </a>
+
+            <a
+             href="https://annhurst-ts.com" 
+             className="text-center"
+             target="_blank"
+             rel="noopener noreferrer"
+            >
+              <p className='mx-auto h-9 w-9 bg-gray-200 shadow-md shadow-red-500/30 rounded-full flex items-center justify-center relative overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-30/50'>
+
+                <Avatar className='h-8 w-8 relative z-10'>
+                  <AvatarImage src="/ats.png" alt="logo" />
+                </Avatar>
+              </p>
+            </a>
+          </div>
           </div>
 
           {/* Quick Links */}
@@ -89,8 +152,8 @@ export default function Footer() {
         </div>
 
         {/* Newsletter Section */}
-        <div className="mt-12 pt-8 border-t border-gray-800">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-3xl mx-auto">
+        <div className="mt-9 pt-8 border-t border-gray-800">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-3xl mx-auto mb-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
               <div>
                 <h5 className="text-lg font-semibold text-white mb-1">
@@ -113,6 +176,15 @@ export default function Footer() {
               </div>
             </div>
           </div>
+
+          {/* Copyright */}
+          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 text-sm text-gray-500 pt-8 border-t border-gray-700">
+              <p>© {new Date().getFullYear()} Annhurst Global Service Limited. All rights reserved.</p>
+              <div className="flex items-center space-x-2">
+                  <span>Powered by</span>
+                  <a href="#" className="text-red-500 hover:underline">UT Express</a>
+              </div>
+          </div>          
         </div>
       </div>
     </footer>
