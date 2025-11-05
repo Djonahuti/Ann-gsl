@@ -2,7 +2,7 @@
  * Configuration Constants
  */
 const SHEET_NAME = 'Leads';
-const SENDER_EMAIL = 'dutibe@annhurst-gsl.com'; // Replace with your company's sending email
+const SENDER_EMAIL = 'dutibe@annhurst-gsl.com';
 const SPREADSHEET_ID_KEY = 'CONTACT_FORM_SHEET_ID';
 
 /**
