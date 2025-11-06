@@ -206,7 +206,7 @@ export default function ContactCTA() {
                       <IconBrandX stroke={2} className='h-5 w-5 text-white relative z-10' />
                     </p>
                   </a>
-        
+
                   <a
                    href="https://web.facebook.com/people/Annhurst-Global-Services/100068235036574/?_rdc=1&_rdr#" 
                    className="text-center"
@@ -226,7 +226,7 @@ export default function ContactCTA() {
                       <IconBrandFacebook className='h-5 w-5 text-white relative z-10' />
                     </p>
                   </a>
-        
+
                   <a
                    href="https://www.instagram.com/annhurst_transport_services/" 
                    className="text-center"
@@ -318,7 +318,7 @@ export default function ContactCTA() {
                 <Button
                   type="submit"
                   disabled={isSubmitting || !GOOGLE_SHEET_URL}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-6 rounded-xl shadow-lg"
+                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-6 rounded-xl shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50"
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>

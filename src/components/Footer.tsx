@@ -153,7 +153,7 @@ export default function Footer() {
 
         {/* Newsletter Section */}
         <div className="mt-9 pt-8 border-t border-gray-800">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-3xl mx-auto mb-2">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-3xl mx-auto mb-2 shimmer-effect">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
               <div>
                 <h5 className="text-lg font-semibold text-white mb-1">
@@ -170,7 +170,7 @@ export default function Footer() {
                   placeholder="Enter your email address"
                   className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
                 />
-                <Button className="bg-red-600 hover:bg-red-700 text-white px-6">
+                <Button className="bg-red-600 hover:bg-red-700 text-white px-6 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50">
                   Subscribe <span className="ml-1">→</span>
                 </Button>
               </div>
