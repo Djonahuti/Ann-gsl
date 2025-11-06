@@ -9,10 +9,11 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Facebook, Twitter, Instagram } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { IconBrandFacebook, IconBrandInstagram, IconBrandX } from "@tabler/icons-react";
 
 // SECURE: Read from .env
 const GOOGLE_SHEET_URL = import.meta.env.VITE_GOOGLE_WEB_APP_URL;
@@ -185,15 +186,65 @@ export default function ContactCTA() {
 
               <div className="mt-10">
                 <p className="font-semibold mb-3">Follow Us</p>
-                <div className="flex gap-4">
-                  <a href="#" className="p-3 bg-red-50 rounded-full hover:bg-red-100 transition">
-                    <Facebook className="w-5 h-5 text-red-600" />
+                <div className="flex justify-item-between space-x-3">
+                  <a
+                   href="https://x.com/i/flow/login?redirect_after_login=%2FAnnhurstGSL" 
+                   className="text-center"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                  >
+                    <p className='mx-auto h-9 w-9 bg-linear-to-b from-red-500 to-red-500/80 shadow-md shadow-red-500/30 rounded-full flex items-center justify-center relative overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50'>
+                        {/* Glossy highlight overlay */}
+                      <span
+                        className="
+                          absolute inset-0
+                          bg-linear-to-t from-transparent via-white/30 to-white/70
+                          opacity-40
+                          rounded-full
+                        "
+                      ></span>
+                      <IconBrandX stroke={2} className='h-5 w-5 text-white relative z-10' />
+                    </p>
                   </a>
-                  <a href="#" className="p-3 bg-red-50 rounded-full hover:bg-red-100 transition">
-                    <Twitter className="w-5 h-5 text-red-600" />
+        
+                  <a
+                   href="https://web.facebook.com/people/Annhurst-Global-Services/100068235036574/?_rdc=1&_rdr#" 
+                   className="text-center"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                  >
+                    <p className='mx-auto h-9 w-9 bg-linear-to-b from-red-500 to-red-500/80 shadow-md shadow-red-500/30 rounded-full flex items-center justify-center relative overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50'>
+                        {/* Glossy highlight overlay */}
+                      <span
+                        className="
+                          absolute inset-0
+                          bg-linear-to-t from-transparent via-white/30 to-white/70
+                          opacity-40
+                          rounded-full
+                        "
+                      ></span>
+                      <IconBrandFacebook className='h-5 w-5 text-white relative z-10' />
+                    </p>
                   </a>
-                  <a href="#" className="p-3 bg-red-50 rounded-full hover:bg-red-100 transition">
-                    <Instagram className="w-5 h-5 text-red-600" />
+        
+                  <a
+                   href="https://www.instagram.com/annhurst_transport_services/" 
+                   className="text-center"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                  >
+                    <p className='mx-auto h-9 w-9 bg-linear-to-b from-red-500 to-red-500/80 shadow-md shadow-red-500/30 rounded-full flex items-center justify-center relative overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50'>
+                        {/* Glossy highlight overlay */}
+                      <span
+                        className="
+                          absolute inset-0
+                          bg-linear-to-t from-transparent via-white/30 to-white/70
+                          opacity-40
+                          rounded-full
+                        "
+                      ></span>
+                      <IconBrandInstagram stroke={2} className='h-5 w-5 text-white relative z-10' />
+                    </p>
                   </a>
                 </div>
               </div>
