@@ -2,7 +2,8 @@
  * Configuration Constants
  */
 const SHEET_NAME = 'Leads';
-const SENDER_EMAIL = 'dutibe@annhurst-gsl.com';
+// Use your official Google-registered email for best deliverability
+const SENDER_EMAIL = 'dutibe@annhurst-gsl.com'; 
 const SPREADSHEET_ID_KEY = 'CONTACT_FORM_SHEET_ID';
 
 /**
@@ -40,27 +41,25 @@ function doPost(e) {
   // ----------------------------------------------------------------------
     
   try {
-    // Attempt to get or create the spreadsheet dynamically.
+    // 1. Get or Create Spreadsheet (This is where the error likely occurred previously)
     const ss = getOrCreateSpreadsheet();
-
-    // 1. Parse Data (READS URL-ENCODED DATA)
-    let data;
-    // We already confirmed e exists above, now check data type
-    if (e.postData && e.postData.type === "application/x-www-form-urlencoded") {
-      // Data is in e.parameter when application/x-www-form-urlencoded is used
-      data = e.parameter; 
-    } else if (e.postData && e.postData.type === "application/json" && e.postData.contents) {
-      // Fallback for JSON in case you switch back
-      data = JSON.parse(e.postData.contents);
-    } else {
-      // If e exists but data format is unexpected
-      throw new Error("Invalid or missing post data in POST request.");
+    if (!ss) {
+        throw new Error("Failed to get or create Spreadsheet.");
     }
     
-    // Convert newsletter to boolean if it came as string "true" or "false"
+    // 2. Parse Data (READS URL-ENCODED DATA)
+    let data;
+    // CRITICAL: We expect application/x-www-form-urlencoded data, which is parsed into e.parameter
+    if (e.parameter) {
+      data = e.parameter; 
+    } else {
+      throw new Error("Invalid or missing form data in POST request.");
+    }
+    
+    // Convert newsletter to boolean string (App Script receives all values as strings from e.parameter)
     const newsletterValue = (data.newsletter === "true" || data.newsletter === true);
 
-    // 2. Save to Sheets
+    // 3. Save to Sheets
     let sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) {
         // If the 'Leads' tab was deleted, recreate it.
@@ -83,39 +82,46 @@ function doPost(e) {
       data.company || '',
       newsletterValue ? "Yes" : "No"
     ]);
+    
+    Logger.log(`Data saved successfully to sheet ID: ${ss.getId()} for: ${data.name}`);
 
-    // 3. Auto-email
+    // 4. Auto-email
     if (data.email) {
       MailApp.sendEmail({
         to: data.email,
         subject: "Your Message to Ann Hurst GSL Has Been Received",
         htmlBody: `
-          <h3>Hi ${data.name || 'Valued Customer'},</h3>
-          <p>Thank you for reaching out! We have successfully received your message and we aim to reply within 24 hours.</p>
-          <p>You submitted the following details:</p>
-          <ul>
-            <li>**Name:** ${data.name || 'N/A'}</li>
-            <li>**Email:** ${data.email || 'N/A'}</li>
-            <li>**Interest:** ${data.service || 'N/A'}</li>
-          </ul>
-          <p>We look forward to speaking with you soon!</p>
-          <br/>
-          <p>Sincerely,</p>
-          <p>The Ann Hurst GSL Team</p>
+          <p style="font-size: 14px; color: #333;">Hi ${data.name || 'Valued Customer'},</p>
+          <p style="font-size: 14px; color: #333;">Thank you for reaching out! We have successfully received your message and we aim to reply within 24 hours.</p>
+          
+          <div style="border: 1px solid #eee; padding: 15px; border-radius: 5px; margin-top: 20px; background-color: #f9f9f9;">
+            <p style="font-weight: bold; margin-top: 0;">Details Submitted:</p>
+            <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;">
+              <li><strong>Name:</strong> ${data.name || 'N/A'}</li>
+              <li><strong>Email:</strong> ${data.email || 'N/A'}</li>
+              <li><strong>Service Interest:</strong> ${data.service || 'N/A'}</li>
+            </ul>
+          </div>
+
+          <p style="font-size: 14px; color: #333; margin-top: 20px;">We look forward to speaking with you soon!</p>
+          <p style="font-size: 14px; color: #333; margin-top: 5px;">Sincerely,</p>
+          <p style="font-size: 16px; font-weight: bold; color: #555;">The Ann Hurst GSL Team</p>
         `,
+        // IMPORTANT FIX: Explicitly set the 'from' address and the display name
         from: SENDER_EMAIL,
         name: "Ann Hurst GSL Customer Service"
       });
+      Logger.log(`Confirmation email sent from ${SENDER_EMAIL} to: ${data.email}`);
     }
 
-    return createResponse({ status: "success", message: "Data received and email sent." });
+    return createResponse({ status: "success", message: "Data received, saved to sheet, and email sent." });
 
   } catch (err) {
     Logger.log("POST Error: " + err.toString());
     // On failure, return the error details to the client console for debugging
     return createResponse({ 
       status: "error", 
-      message: "An internal server error occurred.", 
+      message: "An internal server error occurred. Check script logs.", 
       details: err.toString() 
     });
   }
@@ -124,7 +130,7 @@ function doPost(e) {
 /**
  * Looks up the Spreadsheet ID in Script Properties. If not found,
  * creates a new Spreadsheet and stores its ID.
- * @return {GoogleAppsScript.Spreadsheet.Spreadsheet} The target spreadsheet object.
+ * @return {GoogleAppsScript.Spreadsheet.Spreadsheet} The target spreadsheet object, or null on failure.
  */
 function getOrCreateSpreadsheet() {
   const properties = PropertiesService.getScriptProperties();
@@ -135,17 +141,24 @@ function getOrCreateSpreadsheet() {
     try {
       // Try to open the existing sheet
       ss = SpreadsheetApp.openById(ssId);
+      Logger.log("Successfully opened existing Spreadsheet: " + ssId);
     } catch (e) {
-      // If the sheet was deleted, ss remains null
-      Logger.log("Stored Spreadsheet ID is invalid. Creating new sheet.");
+      // If the sheet was deleted or access was revoked
+      Logger.log("ERROR: Stored Spreadsheet ID is invalid or access denied. " + e.toString());
+      ss = null; // Ensure ss is null before creating a new one
     }
   }
 
   if (!ss) {
     // Create new spreadsheet and store its ID
-    ss = SpreadsheetApp.create('Contact Form Data - Ann Hurst GSL');
-    properties.setProperty(SPREADSHEET_ID_KEY, ss.getId());
-    Logger.log("New Spreadsheet created with ID: " + ss.getId());
+    try {
+        ss = SpreadsheetApp.create('Contact Form Data - Ann Hurst GSL');
+        properties.setProperty(SPREADSHEET_ID_KEY, ss.getId());
+        Logger.log("SUCCESS: New Spreadsheet created with ID: " + ss.getId());
+    } catch (createError) {
+        Logger.log("CRITICAL ERROR: Failed to create new Spreadsheet. Check user permissions. " + createError.toString());
+        return null;
+    }
   }
   
   return ss;
@@ -154,7 +167,6 @@ function getOrCreateSpreadsheet() {
 
 /**
  * Core function to format the JSON response.
- * We rely on the Web App deployment to handle CORS headers.
  * * @param {object} contentObject The JSON payload to return to the client.
  * @return {GoogleAppsScript.Content.TextOutput} The response object.
  */
