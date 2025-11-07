@@ -7,22 +7,22 @@ import { Badge } from "../ui/badge";
 const opportunities = [
   {
     logo: "moni",
-    title: "Rank Capital Credit Financing II",
-    price: "₦5,000",
+    title: "Fixed Bus Investment – Truck Series",
+    price: "₦1.8m per unit",
     investors: 788,
     soldOut: true,
     color: "bg-orange-50",
   },
   {
-    title: "Corporate Debt Note III",
-    price: "₦5,000",
+    title: "Fixed Bus Investment – Series O",
+    price: "₦1.8m per unit",
     investors: 1090,
     soldOut: true,
     icon: <TrendingUp className="w-8 h-8 text-purple-600" />,
   },
   {
-    title: "Corporate Debt Note II",
-    price: "₦5,000",
+    title: "Fixed Bus Investment – Series M",
+    price: "₦1.8m per unit",
     investors: 788,
     soldOut: true,
     icon: <Zap className="w-8 h-8 text-blue-600" />,
@@ -42,7 +42,7 @@ export default function RecentOpportunities() {
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900">
             Recent Opportunities on{" "}
-            <span className="text-purple-700">Investify</span>
+            <span className="text-purple-700">Annhurst TS</span>
           </h2>
         </motion.div>
 
