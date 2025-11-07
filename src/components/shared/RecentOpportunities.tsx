@@ -1,31 +1,30 @@
 import { motion } from "framer-motion";
-import { TrendingUp, Users, Zap } from "lucide-react";
+import { Users } from "lucide-react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 
 const opportunities = [
   {
-    logo: "moni",
     title: "Fixed Bus Investment – Truck Series",
     price: "₦1.8m per unit",
     investors: 788,
     soldOut: true,
-    color: "bg-orange-50",
+    image: "/ann.png", // Replace with actual image path
   },
   {
     title: "Fixed Bus Investment – Series N",
     price: "₦1.8m per unit",
     investors: 1090,
     soldOut: true,
-    icon: <TrendingUp className="w-8 h-8 text-purple-600" />,
+    image: "/ann.png",
   },
   {
     title: "Fixed Bus Investment – Series O",
     price: "₦1.8m per unit",
     investors: 788,
     soldOut: true,
-    icon: <Zap className="w-8 h-8 text-blue-600" />,
+    image: "/ann.png",
   },
 ];
 
@@ -42,7 +41,7 @@ export default function RecentOpportunities() {
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900">
             Recent Opportunities on{" "}
-            <span className="text-purple-700">Annhurst TS</span>
+            <span className="text-purple-700">Annhurst GSL</span>
           </h2>
         </motion.div>
 
@@ -59,28 +58,18 @@ export default function RecentOpportunities() {
               className="group"
             >
               <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 bg-white">
-                {/* Image Placeholder */}
-                <div className="h-48 bg-linear-to-br from-gray-100 to-gray-200 border-2 border-dashed border-gray-300 rounded-t-2xl flex items-center justify-center">
-                  {opp.logo ? (
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-orange-400 rounded-full flex items-center justify-center">
-                        <span className="text-2xl text-white font-bold">
-                          {opp.logo[0]}
-                        </span>
-                      </div>
-                      <span className="text-3xl font-black text-gray-800">
-                        {opp.logo}
-                      </span>
-                    </div>
-                  ) : opp.icon ? (
-                    opp.icon
-                  ) : (
-                    <div className="bg-gray-300 border-2 border-dashed rounded-xl w-24 h-24" />
-                  )}
+                {/* Real Image */}
+                <div className="relative h-48 bg-gray-100 overflow-hidden">
+                  <img
+                    src={opp.image}
+                    alt={opp.title}
+                    className="w-full h-full object-fit transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
+                <div className="p-6 relative">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-2">
                     {opp.title}
                   </h3>
@@ -110,7 +99,7 @@ export default function RecentOpportunities() {
                     Sold Out
                   </Button>
 
-                  <Badge className="absolute top-4 right-4 bg-red-500 text-white animate-pulse">
+                  <Badge className="absolute top-4 right-4 bg-red-500 text-white animate-pulse shadow-lg">
                     SOLD OUT
                   </Badge>
                 </div>
