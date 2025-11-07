@@ -14,14 +14,14 @@ const opportunities = [
     color: "bg-orange-50",
   },
   {
-    title: "Fixed Bus Investment – Series O",
+    title: "Fixed Bus Investment – Series N",
     price: "₦1.8m per unit",
     investors: 1090,
     soldOut: true,
     icon: <TrendingUp className="w-8 h-8 text-purple-600" />,
   },
   {
-    title: "Fixed Bus Investment – Series M",
+    title: "Fixed Bus Investment – Series O",
     price: "₦1.8m per unit",
     investors: 788,
     soldOut: true,
