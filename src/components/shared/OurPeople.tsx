@@ -41,8 +41,8 @@ export default function OurPeople() {
             whileHover={{ scale: 1.03 }}
             className="rounded-2xl overflow-hidden shadow-2xl"
           >
-            <div className="bg-linear-to-br from-blue-100 to-indigo-100 h-64 flex items-center justify-center">
-              <div className="bg-gray-300 border-2 border-dashed rounded-xl w-32 h-32" />
+            <div className="border-2 rounded-xl border-linear-to-br from-blue-100 to-indigo-100 h-64 flex items-center justify-center">
+              <img src="/pep.jpg" alt="people" className="w-full h-62 rounded-lg" />
             </div>
           </motion.div>
 
@@ -55,8 +55,8 @@ export default function OurPeople() {
               whileHover={{ scale: 1.05 }}
               className="rounded-2xl overflow-hidden shadow-xl"
             >
-              <div className="bg-linear-to-tr from-purple-100 to-pink-100 h-56 flex items-center justify-center">
-                <div className="bg-gray-300 border-2 border-dashed rounded-xl w-24 h-24" />
+              <div className="border-2 rounded-xl border-linear-to-tr from-purple-100 to-pink-100 h-56 flex items-center justify-center">
+                <img src="/int.jpg" alt="icon" className="rounded-xl w-full h-54" />
               </div>
             </motion.div>
 
@@ -67,8 +67,8 @@ export default function OurPeople() {
               whileHover={{ scale: 1.05 }}
               className="rounded-2xl overflow-hidden shadow-xl"
             >
-              <div className="bg-linear-to-bl from-green-100 to-emerald-100 h-56 flex items-center justify-center">
-                <div className="bg-gray-300 border-2 border-dashed rounded-xl w-24 h-24" />
+              <div className="border-2 rounded-xl border-linear-to-bl from-green-100 to-emerald-100 h-56 flex items-center justify-center">
+                <img src="/fist.jpg" alt="icon" className="rounded-xl w-full h-54" />
               </div>
             </motion.div>
           </div>
