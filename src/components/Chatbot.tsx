@@ -115,7 +115,7 @@ export default function Chatbot() {
       {/* Floating Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-full shadow-2xl flex items-center gap-2"
+        className="fixed bottom-25 right-6 z-50 bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-full shadow-2xl flex items-center gap-2"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         whileHover={{ scale: 1.05 }}
