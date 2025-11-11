@@ -157,7 +157,12 @@ export default function Chatbot() {
             <div className="flex-1 p-4 overflow-y-auto bg-gray-50 space-y-4">
               {messages.length === 0 ? (
                 <div className="text-center text-gray-500 py-8">
-                  <Bot className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <Avatar className="w-12 h-12 mx-auto mb-2 rounded-full shadow-lg shadow-purple-500/30">
+                    <AvatarImage src="/big.jpg" />
+                    <AvatarFallback>
+                        <Bot className="w-11 h-11 mx-auto opacity-50" />
+                    </AvatarFallback>
+                  </Avatar>
                   <p className="text-sm">Hi! Ask about investments, returns, or bus hire.</p>
                 </div>
               ) : (
