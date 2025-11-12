@@ -132,7 +132,7 @@ export default function Chatbot() {
             initial={{ opacity: 0, scale: 0.9, x: 20 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             exit={{ opacity: 0, scale: 0.9, x: 20 }}
-            className="fixed bottom-24 right-6 w-80 md:w-96 h-100 bg-white rounded-2xl shadow-2xl flex flex-col border border-purple-400 z-50 space-y-2"
+            className="fixed bottom-24 right-6 w-80 md:w-96 h-100 bg-white rounded-md shadow-2xl flex flex-col border border-purple-400 z-50 space-y-2"
           >
             {/* Header */}
             <div className="p-4 bg-linear-to-r from-purple-600 to-pink-600 text-white flex justify-between items-center">
