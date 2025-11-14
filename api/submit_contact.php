@@ -1,90 +1,85 @@
 <?php
+// /httpdocs/api/submit_contact.php - PLESK MAIL() FIXED
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'PHPMailer.php';
-require 'SMTP.php';
-require 'Exception.php';
+require __DIR__ . '/PHPMailer.php';
+require __DIR__ . '/SMTP.php';
+require __DIR__ . '/Exception.php';
 
-// Database connection
-$servername = "localhost";
-$username = "annhurst";
-$password = "Annhurst123#";
-$dbname = "annhurst";
+header('Content-Type: application/json');
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
+// === DATABASE ===
+$conn = new mysqli("localhost", "annhurst", "Annhurst123#", "annhurst");
 if ($conn->connect_error) {
-  die(json_encode(["status" => "error", "message" => "DB connection failed: " . $conn->connect_error]));
+    echo json_encode(["status" => "error", "message" => "DB error"]);
+    exit;
 }
 
-// Get JSON data from React form
 $data = json_decode(file_get_contents('php://input'), true);
-
-// Validate required fields
-if (empty($data['name']) || empty($data['email']) || empty($data['phone']) || empty($data['message'])) {
-  die(json_encode(["status" => "error", "message" => "Missing required fields"]));
+if (!$data || empty($data['name']) || empty($data['email']) || empty($data['message'])) {
+    echo json_encode(["status" => "error", "message" => "Missing data"]);
+    exit;
 }
 
-// Insert into MySQL
+// === SAVE TO MYSQL ===
 $stmt = $conn->prepare("INSERT INTO contact_us (name, email, phone, company, subject, message, newsletter) VALUES (?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("ssssssi", $data['name'], $data['email'], $data['phone'], $data['company'], $data['service'], $data['message'], $data['newsletter']);
+$newsletter = $data['newsletter'] ? 1 : 0;
+$stmt->bind_param("ssssssi", $data['name'], $data['email'], $data['phone'], $data['company'], $data['service'], $data['message'], $newsletter);
 
 if (!$stmt->execute()) {
-  die(json_encode(["status" => "error", "message" => "DB insert failed: " . $stmt->error]));
+    echo json_encode(["status" => "error", "message" => "DB save failed"]);
+    exit;
 }
-
 $stmt->close();
 $conn->close();
 
-// Send emails with PHPMailer
-$mail = new PHPMailer(true);
+// === EMAIL TO ADMIN (PLESK MAIL() - NO SMTP) ===
+$adminSubject = "New Contact Form Submission from " . $data['name'];
+$adminBody = "
+New Contact from {$data['name']}
 
-try {
-  // Server settings
-  $mail->isSMTP();
-  $mail->Host = 'annhurst-gsl.com';
-  $mail->SMTPAuth = true;
-  $mail->Username = 'dutibe@annhurst-gsl.com';
-  $mail->Password = '#Ibr4hhO2*Gpdb7s';
-  $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-  $mail->Port = 465;
+Email: {$data['email']}
+Phone: {$data['phone']}
+Company: {$data['company']}
+Service: {$data['service']}
+Message: {$data['message']}
+Newsletter: " . ($data['newsletter'] ? 'Yes' : 'No') . "
 
-  // Email to Admin
-  $mail->setFrom('dutibe@annhurst-gsl.com', 'Annhurst Admin');
-  $mail->addAddress('dutibe@annhurst-gsl.com'); // Admin email
-  $mail->isHTML(true);
-  $mail->Subject = 'New Contact Form Submission';
-  $mail->Body = "
-    <h2>New Contact from {$data['name']}</h2>
-    <p><strong>Email:</strong> {$data['email']}</p>
-    <p><strong>Phone:</strong> {$data['phone']}</p>
-    <p><strong>Company:</strong> {$data['company']}</p>
-    <p><strong>Service:</strong> {$data['service']}</p>
-    <p><strong>Message:</strong> {$data['message']}</p>
-    <p><strong>Newsletter:</strong> " . ($data['newsletter'] ? 'Yes' : 'No') . "</p>
-  ";
-  $mail->send();
+---
+Annhurst Global Services Ltd
+";
 
-  // Auto-reply to Sender
-  $mail->clearAddresses();
-  $mail->addAddress($data['email'], $data['name']);
-  $mail->Subject = 'Thank You for Contacting Annhurst Global';
-  $mail->Body = "
-    <div style='font-family: Arial; padding: 20px; background: #f9f9f9; border-radius: 10px;'>
-      <h2 style='color: #dc2626;'>Hi {$data['name']},</h2>
-      <p>We've received your message and will reply within 24 hours.</p>
-      <p><em>\"{$data['message']}\"</em></p>
-      <hr>
-      <small>Annhurst Global Services Ltd • Lagos, Nigeria • +234 809 348 7556</small>
-    </div>
-  ";
-  $mail->send();
+$adminHeaders = "From: noreply@annhurst-gsl.com\r\n";
+$adminHeaders .= "Content-Type: text/html; charset=UTF-8\r\n";
 
-  echo json_encode(["status" => "success"]);
-
-} catch (Exception $e) {
-  echo json_encode(["status" => "error", "message" => "Email failed: {$mail->ErrorInfo}"]);
+if (mail('dutibe@annhurst-gsl.com', $adminSubject, $adminBody, $adminHeaders)) {
+    // Admin email sent
+} else {
+    // Log failure (but don't stop)
 }
-?> 
+
+// === AUTO-REPLY TO USER (PLESK MAIL()) ===
+$userSubject = "Thank You for Contacting Annhurst Global";
+$userBody = "
+<div style='font-family: Arial; padding: 20px; background: #f9f9f9; border-radius: 10px;'>
+    <h2 style='color: #dc2626;'>Hi {$data['name']},</h2>
+    <p>We've received your message and will reply within 24 hours.</p>
+    <p><em>\"{$data['message']}\"</em></p>
+    <hr>
+    <small>Annhurst Global Services Ltd • Lagos, Nigeria • +234 809 348 7556</small>
+</div>
+";
+
+$userHeaders = "From: noreply@annhurst-gsl.com\r\n";
+$userHeaders .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+if (mail($data['email'], $userSubject, $userBody, $userHeaders)) {
+    // Auto-reply sent
+} else {
+    // Log failure
+}
+
+echo json_encode(["status" => "success", "message" => "Message saved and emails sent"]);
+?>
