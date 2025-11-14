@@ -28,9 +28,9 @@ export default function Footer() {
   const [settings, setSettings] = useState<SettingsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState("");
   const [subStatus, setSubStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [subMessage, setSubMessage] = useState("");
+  const [subscriberEmail, setSubscriberEmail] = useState("");
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -56,38 +56,38 @@ export default function Footer() {
   }, []);
 
   const handleSubscribe = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!email || !/\S+@\S+\.\S+/.test(email)) {
-    setSubStatus("error");
-    setSubMessage("Please enter a valid email");
-    return;
-  }
-
-  setSubStatus("loading");
-  setSubMessage("");
-
-  try {
-    const res = await fetch('/api/subscribe.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-
-    const data = await res.json();
-
-    if (data.status === 'success') {
-      setSubStatus("success");
-      setSubMessage(data.message);
-      setEmail("");
-    } else {
+    e.preventDefault();
+    if (!subscriberEmail || !/\S+@\S+\.\S+/.test(subscriberEmail)) {
       setSubStatus("error");
-      setSubMessage(data.message);
+      setSubMessage("Please enter a valid email");
+      return;
     }
-  } catch (err) {
-    setSubStatus("error");
-    setSubMessage("Network error. Try again.");
-  }
-};
+
+    setSubStatus("loading");
+    setSubMessage("");
+
+    try {
+      const res = await fetch('/api/subscribe.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: subscriberEmail })
+      });
+
+      const data = await res.json();
+
+      if (data.status === 'success') {
+        setSubStatus("success");
+        setSubMessage(data.message);
+        setSubscriberEmail(""); // Clear input
+      } else {
+        setSubStatus("error");
+        setSubMessage(data.message);
+      }
+    } catch (err) {
+        setSubStatus("error");
+        setSubMessage("Network error. Try again.");
+    }
+  };
 
   if (loading) {
     return (
@@ -110,6 +110,7 @@ export default function Footer() {
   }
 
   const phone = settings.phone[0] || '+234 707 857 1856';
+  const email = settings.email[0] || 'customerservices@annhurst-gsl.com';
   const addressLines = settings.address.split('\n');
 
   return (
@@ -236,61 +237,60 @@ export default function Footer() {
         </div>
 
         {/* Newsletter Section */}
-<div className="mt-9 pt-8 border-t border-gray-800">
-  <div className="bg-gray-800 rounded-lg p-6 max-w-3xl mx-auto mb-2">
-    <form onSubmit={handleSubscribe} className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-      <div>
-        <h5 className="text-lg font-semibold text-white mb-1">
-          Stay Updated
-        </h5>
-        <p className="text-sm text-gray-400">
-          Subscribe to our newsletter for the latest investment
-          opportunities and company updates.
-        </p>
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex gap-2">
-          <Input
-            type="email"
-            placeholder="Enter your email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={subStatus === "loading" || subStatus === "success"}
-            className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500 disabled:opacity-60"
-          />
-          <Button
-            type="submit"
-            disabled={subStatus === "loading" || subStatus === "success"}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/50 disabled:opacity-60"
-          >
-            {subStatus === "loading" ? "..." : "Subscribe"} <span className="ml-1">Right Arrow</span>
-          </Button>
-        </div>
-        {subMessage && (
-          <p className={`text-sm mt-1 ${subStatus === "success" ? "text-green-400" : "text-red-400"}`}>
-            {subMessage}
-          </p>
-        )}
-      </div>
-    </form>
-  </div>
+        <div className="mt-9 pt-8 border-t border-gray-800">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-3xl mx-auto mb-2">
+            <form onSubmit={handleSubscribe} className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+              <div>
+                <h5 className="text-lg font-semibold text-white mb-1">
+                  Stay Updated
+                </h5>
+                <p className="text-sm text-gray-400">
+                  Subscribe to our newsletter for the latest investment opportunities and company updates.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={subscriberEmail}
+                    onChange={(e) => setSubscriberEmail(e.target.value)}
+                    disabled={subStatus === "loading" || subStatus === "success"}
+                    className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500 disabled:opacity-60"
+                  />
+                  <Button
+                    type="submit"
+                    disabled={subStatus === "loading" || subStatus === "success"}
+                    className="bg-red-600 hover:bg-red-700 text-white px-6 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/50 disabled:opacity-60"
+                  >
+                    {subStatus === "loading" ? "..." : "Subscribe"} <span className="ml-1">Right Arrow</span>
+                  </Button>
+                </div>
+                {subMessage && (
+                  <p className={`text-sm mt-1 ${subStatus === "success" ? "text-green-400" : "text-red-400"}`}>
+                    {subMessage}
+                  </p>
+                )}
+              </div>
+            </form>
+          </div>
 
-  {/* Copyright */}
-  <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 text-sm text-gray-500 pt-8 border-t border-gray-700">
-    <p>© {new Date().getFullYear()} {settings.bottom_left}</p>
-    <div className="flex flex-wrap items-center justify-center gap-3 text-xs md:text-sm">
-      {settings.bottom_right.map((link, i) => (
-        <a key={link} href="#" className="text-gray-400 hover:text-white transition-colors">
-          {link}
-          {i < settings.bottom_right.length - 1 && <span className="mx-2 text-gray-600">|</span>}
-        </a>
-      ))}
-      <span className="text-gray-600 mx-2">|</span>
-      <span>Powered by</span>
-      <a href="#" className="text-red-500 hover:underline font-medium">UT Express</a>
-    </div>
-  </div>
-</div>
+          {/* Copyright */}
+          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 text-sm text-gray-500 pt-8 border-t border-gray-700">
+            <p>© {new Date().getFullYear()} {settings.bottom_left}</p>
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs md:text-sm">
+              {settings.bottom_right.map((link, i) => (
+                <a key={link} href="#" className="text-gray-400 hover:text-white transition-colors">
+                  {link}
+                  {i < settings.bottom_right.length - 1 && <span className="mx-2 text-gray-600">|</span>}
+                </a>
+              ))}
+              <span className="text-gray-600 mx-2">|</span>
+              <span>Powered by</span>
+              <a href="#" className="text-red-500 hover:underline font-medium">UT Express</a>
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   );
