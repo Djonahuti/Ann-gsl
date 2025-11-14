@@ -1,7 +1,7 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconBrandFacebook, IconBrandInstagram, IconBrandX } from '@tabler/icons-react';
+import { IconArrowRight, IconBrandFacebook, IconBrandInstagram, IconBrandX } from '@tabler/icons-react';
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 
@@ -263,7 +263,7 @@ export default function Footer() {
                     disabled={subStatus === "loading" || subStatus === "success"}
                     className="bg-red-600 hover:bg-red-700 text-white px-6 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/50 disabled:opacity-60"
                   >
-                    {subStatus === "loading" ? "..." : "Subscribe"} <span className="ml-1">Right Arrow</span>
+                    {subStatus === "loading" ? "..." : "Subscribe"} <span className="ml-1"><IconArrowRight /></span>
                   </Button>
                 </div>
                 {subMessage && (
