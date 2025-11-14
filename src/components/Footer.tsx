@@ -237,8 +237,8 @@ export default function Footer() {
         </div>
 
         {/* Newsletter Section */}
-        <div className="mt-9 pt-8 border-t border-gray-800 shimmer shimmer-effect">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-3xl mx-auto mb-2">
+        <div className="mt-9 pt-8 border-t border-gray-800">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-3xl mx-auto mb-2 shimmer-effect">
             <form onSubmit={handleSubscribe} className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
               <div>
                 <h5 className="text-lg font-semibold text-white mb-1">
