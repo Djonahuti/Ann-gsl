@@ -44,12 +44,12 @@ $mail = new PHPMailer(true);
 try {
   // Server settings
   $mail->isSMTP();
-  $mail->Host = 'annhurst-gsl.com'; // Outgoing server
+  $mail->Host = 'annhurst-gsl.com';
   $mail->SMTPAuth = true;
-  $mail->Username = 'dutibe@annhurst-gsl.com'; // Mail username
-  $mail->Password = 'YOUR_MAIL_PASSWORD_HERE'; // ADD YOUR PASSWORD HERE (from hosting)
-  $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // SSL/TLS
-  $mail->Port = 465; // Port for SSL
+  $mail->Username = 'dutibe@annhurst-gsl.com';
+  $mail->Password = '#Ibr4hhO2*Gpdb7s';
+  $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+  $mail->Port = 465;
 
   // Email to Admin
   $mail->setFrom('dutibe@annhurst-gsl.com', 'Annhurst Admin');
