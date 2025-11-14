@@ -10,17 +10,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { IconBrandFacebook, IconBrandInstagram, IconBrandX } from "@tabler/icons-react";
 
-// SECURE: Read from .env
-const GOOGLE_SHEET_URL = import.meta.env.VITE_GOOGLE_WEB_APP_URL;
-
-if (!GOOGLE_SHEET_URL) {
-  console.error("VITE_GOOGLE_WEB_APP_URL is missing in .env");
-}
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name too short"),
@@ -58,47 +51,17 @@ export default function ContactCTA() {
   }, []);
 
   const onSubmit = async (data: ContactFormData) => {
-    if (!GOOGLE_SHEET_URL) {
-      toast.error("Form not configured. Contact admin.");
-      return;
-    }
-
     try {
-      // 1. Save to Supabase
-      const { error: sbError } = await supabase
-        .from("contact_us")
-        .insert([{
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          company: data.company,
-          subject: data.service,
-          message: data.message,
-          newsletter: data.newsletter,
-        }]);
-
-      if (sbError) throw sbError;
-
-      // 2. Prepare data for Google Sheets in URL-encoded format
-      // This bypasses the CORS preflight request (OPTIONS)
-      const urlEncodedData = new URLSearchParams(data as unknown as Record<string, string>).toString();
-
-      const res = await fetch(GOOGLE_SHEET_URL, {
-        method: "POST",
-        // CRITICAL CHANGE: Use standard form content type for simple request
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: urlEncodedData,
+      const res = await fetch('/api/submit_contact.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
 
-      if (!res.ok) throw new Error(`Network error: ${res.status} ${res.statusText}`);
-      
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const result = await res.json();
-      
-      // Check for the status property from Code.gs
-      if (result.status !== "success") {
-         console.error("Google Sheets App Script failed:", result.message || result.details);
-         throw new Error("Google Sheets App Script failed");
-      }
+
+      if (result.status !== "success") throw new Error(result.message);
 
       toast.success("Message sent! Check your email for confirmation.");
       reset();
@@ -317,7 +280,7 @@ export default function ContactCTA() {
 
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !GOOGLE_SHEET_URL}
+                  disabled={isSubmitting}
                   className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-6 rounded-xl shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50"
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
