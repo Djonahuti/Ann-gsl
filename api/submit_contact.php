@@ -87,4 +87,4 @@ try {
 } catch (Exception $e) {
   echo json_encode(["status" => "error", "message" => "Email failed: {$mail->ErrorInfo}"]);
 }
-?>
+?> 
