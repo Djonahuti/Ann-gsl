@@ -147,7 +147,7 @@ export default function Footer() {
               >
                 <div className="h-9 w-9 bg-gray-200 shadow-md shadow-red-500/30 rounded-full flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-110 group-hover:shadow-red-500/50">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={settings.logo_blk} alt="ATS" />
+                    <AvatarImage src="/ats.png" alt="ATS" />
                   </Avatar>
                 </div>
               </a>
