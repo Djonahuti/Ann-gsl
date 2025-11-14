@@ -1,10 +1,10 @@
 # .github/workflows/deploy.yml
-name: Deploy to FTP
+name: Deploy to FTP (FTPS)
 
 on:
   push:
-    branches: [master]  # Change to 'main' if needed
-  workflow_dispatch: # Allows manual trigger
+    branches: [master]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -30,14 +30,16 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
-      - name: Deploy via FTP
+      - name: Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
           local-dir: ./dist/
-          server-dir: /public_html/  # Change if your site is in a subfolder
+          server-dir: /httpdocs/  # CHANGED FROM /public_html/ TO /httpdocs/
           dangerous-clean-slate: false
           exclude: |
             **/.git*
