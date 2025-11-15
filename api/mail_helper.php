@@ -12,7 +12,7 @@ class MailHelper {
     public function __construct() {
         $this->mail = new PHPMailer(true);
         $this->mail->isSMTP();
-        $this->mail->Host = 'mail.ushop.com.ng';
+        $this->mail->Host = 'annhurst-gsl.com';
         $this->mail->SMTPAuth = true;
         $this->mail->Username = 'noreply@ushop.com.ng';
         $this->mail->Password = 'Xcalibar12$';
