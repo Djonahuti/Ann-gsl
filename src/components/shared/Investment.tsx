@@ -156,7 +156,7 @@ export default function Investment() {
               className="mt-8 text-center"
             >
               <a
-                href="https://wa.me/+2348093183556?text=I%27d%20like%20to%20know%20more%20about%20your%20investment%20opportunities."
+                href="https://wa.me/+2347078571856?text=I%27d%20like%20to%20know%20more%20about%20your%20investment%20opportunities."
                 className="inline-flex items-center gap-2 px-6 py-3 border-2 border-purple-300 rounded-full text-purple-700 font-medium hover:bg-purple-50 transition"
               >
                 Chat with us on WhatsApp

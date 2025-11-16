@@ -67,7 +67,7 @@ export default function ContactCTA() {
       reset();
     } catch (err) {
       console.error("Submission failed:", err);
-      toast.error("Failed to send. Please call us directly: +234 809 348 7556");
+      toast.error("Failed to send. Please call us directly: +234 707 857 1856");
     }
   };
 
@@ -113,7 +113,7 @@ export default function ContactCTA() {
                   <div>
                     <p className="font-semibold">Phone</p>
                     <p className="text-sm text-gray-600">
-                      +234 809 348 7556
+                      +234 707 857 1856
                       <br />
                       Available 9am – 5pm (WAT)
                     </p>

@@ -221,7 +221,7 @@ export default function Chatbot() {
                 </Button>
               </div>
               <div className="flex justify-center mt-2">
-                <Button variant="link" size="sm" onClick={() => window.open("https://wa.me/2348093487556", "_blank")}>
+                <Button variant="link" size="sm" onClick={() => window.open("https://wa.me/+2347078571856", "_blank")}>
                   <Phone className="w-4 h-4 mr-1" />
                   WhatsApp Now
                 </Button>
