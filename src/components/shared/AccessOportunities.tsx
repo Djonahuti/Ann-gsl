@@ -2,8 +2,65 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Truck, Briefcase } from "lucide-react";
+import { useEffect, useState } from "react";
+
+type PageData = {
+  investment_header: string;
+  investment_header_primary: string;
+  investment_text: string;
+  investment_span: string;
+  inv_q1: string;
+  inv_q2: string;
+  inv_small: string;
+  inv_big: string;
+  inv_cta: string;
+  // Add other fields as needed
+};
+
+type ApiResponse = {
+  status: "success" | "error";
+  data?: PageData;
+  message?: string;
+};
 
 export default function AccessOpportunities() {
+  const [pageData, setPageData] = useState<PageData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPageData = async () => {
+      try {
+        const res = await fetch('/api/page.php');
+        if (!res.ok) throw new Error('Failed to fetch page data');
+
+        const json: ApiResponse = await res.json();
+        if (json.status === 'success' && json.data) {
+          setPageData(json.data);
+        } else {
+          throw new Error(json.message || 'Invalid response');
+        }
+      } catch (err) {
+        console.error('AccessOpportunities error:', err);
+        setError('Failed to load content');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPageData();
+  }, []);
+
+  if (loading || error || !pageData) {
+    return (
+      <section className="py-24 px-6 bg-linear-to-r from-purple-50 via-pink-50 to-orange-50">
+        <div className="max-w-7xl mx-auto text-center text-gray-500">
+          {loading ? 'Loading...' : error || 'Content unavailable'}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-24 px-6 bg-linear-to-r from-purple-50 via-pink-50 to-orange-50">
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
@@ -16,16 +73,15 @@ export default function AccessOpportunities() {
           transition={{ duration: 0.8 }}
         >
           <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-8 leading-tight">
-            Access investment
+            {pageData.investment_header}
             <br />
             <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-pink-600">
-              opportunities
+              {pageData.investment_header_primary}
             </span>
           </h2>
 
           <p className="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed">
-            Invest securely and confidently on the go. Grow your money 
-            confidently by investing in pre-vetted investment opportunities.
+            {pageData.investment_text}
           </p>
 
           <motion.a
@@ -33,7 +89,7 @@ export default function AccessOpportunities() {
             whileHover={{ x: 8 }}
             className="inline-flex items-center gap-3 text-purple-600 font-bold text-lg hover:text-purple-700 transition"
           >
-            Learn more about Investments
+            {pageData.investment_span}
             <ArrowRight className="w-5 h-5" />
           </motion.a>
         </motion.div>
@@ -58,7 +114,7 @@ export default function AccessOpportunities() {
                 <Truck className="w-10 h-10 text-orange-500 flex shrink-0" />
                 <div>
                   <p className="font-semibold text-gray-800">
-                    Are you an experienced driver looking to own your own bus?
+                    {pageData.inv_q1}
                   </p>
                 </div>
               </motion.div>
@@ -72,7 +128,7 @@ export default function AccessOpportunities() {
                 <Briefcase className="w-10 h-10 text-purple-600 flex shrink-0" />
                 <div>
                   <p className="font-semibold text-gray-800">
-                    Are you a business owner that needs a vehicle to move your goods?
+                    {pageData.inv_q2}
                   </p>
                 </div>
               </motion.div>
@@ -85,10 +141,10 @@ export default function AccessOpportunities() {
               className="bg-linear-to-r from-purple-100 to-pink-100 p-6 rounded-2xl mb-8"
             >
               <p className="text-lg font-bold text-gray-900 text-center">
-                Try our Hire Purchase Agreements today
+                {pageData.inv_small}
                 <br />
                 <span className="text-3xl text-purple-700">
-                  and pay as little as ₦65,000 weekly!
+                  {pageData.inv_big}
                 </span>
               </p>
             </motion.div>
@@ -109,7 +165,7 @@ export default function AccessOpportunities() {
               }}
              className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-lg py-7 rounded-xl shadow-lg"
               >
-                Contact Us Now!
+                {pageData.inv_cta}
               </Button>
             </motion.div>
 
