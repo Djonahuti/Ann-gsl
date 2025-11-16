@@ -13,38 +13,56 @@ type Opportunity = {
   soldOut: boolean;
 };
 
-type ApiResponse = {
+type PageData = {
+  ro: string;
+  ro_primary: string;
+  ro_cta: string;
+};
+
+type ApiResponse<T> = {
   status: "success" | "error";
-  data?: Opportunity[];
+  data?: T;
   message?: string;
 };
 
 export default function RecentOpportunities() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [pageData, setPageData] = useState<PageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchOpportunities = async () => {
+    const fetchAllData = async () => {
       try {
-        const res = await fetch('/api/recent-investments.php');
-        if (!res.ok) throw new Error('Failed to fetch');
+        // Fetch opportunities
+        const oppRes = await fetch('/api/recent-investments.php');
+        if (!oppRes.ok) throw new Error('Failed to fetch opportunities');
 
-        const json: ApiResponse = await res.json();
-        if (json.status === 'success' && json.data) {
-          setOpportunities(json.data);
-        } else {
-          throw new Error(json.message || 'Invalid response');
+        const oppJson: ApiResponse<Opportunity[]> = await oppRes.json();
+        if (oppJson.status !== 'success' || !oppJson.data) {
+          throw new Error(oppJson.message || 'Invalid opportunities data');
         }
+
+        // Fetch page content
+        const pageRes = await fetch('/api/page.php');
+        if (!pageRes.ok) throw new Error('Failed to fetch page data');
+
+        const pageJson: ApiResponse<PageData> = await pageRes.json();
+        if (pageJson.status !== 'success' || !pageJson.data) {
+          throw new Error(pageJson.message || 'Invalid page data');
+        }
+
+        setOpportunities(oppJson.data);
+        setPageData(pageJson.data);
       } catch (err) {
         console.error('RecentOpportunities error:', err);
-        setError('Failed to load opportunities');
+        setError('Failed to load section');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOpportunities();
+    fetchAllData();
   }, []);
 
   // Loading State
@@ -66,17 +84,17 @@ export default function RecentOpportunities() {
   }
 
   // Error State
-  if (error) {
+  if (error || !pageData) {
     return (
       <section className="py-20 px-6 bg-linear-to-b from-white to-purple-50">
         <div className="max-w-7xl mx-auto text-center">
-          <p className="text-red-600 font-medium">{error}</p>
+          <p className="text-red-600 font-medium">{error || 'Content unavailable'}</p>
         </div>
       </section>
     );
   }
 
-  // Empty State
+  // Empty Opportunities
   if (opportunities.length === 0) {
     return (
       <section className="py-20 px-6 bg-linear-to-b from-white to-purple-50">
@@ -98,8 +116,8 @@ export default function RecentOpportunities() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900">
-            Recent Opportunities on{" "}
-            <span className="text-purple-700">Annhurst GSL</span>
+            {pageData.ro}{" "}
+            <span className="text-purple-700">{pageData.ro_primary}</span>
           </h2>
         </motion.div>
 
@@ -183,7 +201,7 @@ export default function RecentOpportunities() {
           className="text-center mt-16"
         >
           <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-white px-10 py-6 text-lg rounded-full shadow-xl">
-            Explore More Opportunities
+            {pageData.ro_cta}
           </Button>
         </motion.div>
       </div>
