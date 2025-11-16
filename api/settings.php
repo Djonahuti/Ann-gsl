@@ -1,5 +1,4 @@
 <?php
-// api/settings.php
 
 // === CORS Headers (for React frontend) ===
 header("Access-Control-Allow-Origin: *"); // Change * to your domain in production

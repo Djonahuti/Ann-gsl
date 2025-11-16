@@ -201,6 +201,21 @@ CREATE TABLE `page` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
+-- Table: recent_investments
+-- ----------------------------
+DROP TABLE IF EXISTS `recent_investments`;
+CREATE TABLE `recent_investments` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `title` TEXT,
+  `price` TEXT,
+  `investors` BIGINT,
+  `image` TEXT,
+  `sold_out` TINYINT(1) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 -- Table: settings
 -- ----------------------------
 DROP TABLE IF EXISTS `settings`;

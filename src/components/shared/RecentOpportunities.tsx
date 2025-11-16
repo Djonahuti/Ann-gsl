@@ -3,32 +3,90 @@ import { Users } from "lucide-react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { useEffect, useState } from "react";
 
-const opportunities = [
-  {
-    title: "Fixed Bus Investment – Truck Series",
-    price: "₦1.8m per unit",
-    investors: 788,
-    soldOut: true,
-    image: "/ann.png", // Replace with actual image path
-  },
-  {
-    title: "Fixed Bus Investment – Series N",
-    price: "₦1.8m per unit",
-    investors: 1090,
-    soldOut: true,
-    image: "/ann.png",
-  },
-  {
-    title: "Fixed Bus Investment – Series O",
-    price: "₦1.8m per unit",
-    investors: 788,
-    soldOut: true,
-    image: "/ann.png",
-  },
-];
+type Opportunity = {
+  title: string;
+  price: string;
+  investors: number;
+  image: string;
+  soldOut: boolean;
+};
+
+type ApiResponse = {
+  status: "success" | "error";
+  data?: Opportunity[];
+  message?: string;
+};
 
 export default function RecentOpportunities() {
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        const res = await fetch('/api/recent-investments.php');
+        if (!res.ok) throw new Error('Failed to fetch');
+
+        const json: ApiResponse = await res.json();
+        if (json.status === 'success' && json.data) {
+          setOpportunities(json.data);
+        } else {
+          throw new Error(json.message || 'Invalid response');
+        }
+      } catch (err) {
+        console.error('RecentOpportunities error:', err);
+        setError('Failed to load opportunities');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOpportunities();
+  }, []);
+
+  // Loading State
+  if (loading) {
+    return (
+      <section className="py-20 px-6 bg-linear-to-b from-white to-purple-50">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="animate-pulse">
+            <div className="h-8 bg-purple-200 rounded w-64 mx-auto mb-4"></div>
+            <div className="grid md:grid-cols-3 gap-8 mt-16">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white/50 backdrop-blur rounded-xl h-80"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Error State
+  if (error) {
+    return (
+      <section className="py-20 px-6 bg-linear-to-b from-white to-purple-50">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-red-600 font-medium">{error}</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Empty State
+  if (opportunities.length === 0) {
+    return (
+      <section className="py-20 px-6 bg-linear-to-b from-white to-purple-50">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-gray-600">No recent opportunities available.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-20 px-6 bg-linear-to-b from-white to-purple-50">
       <div className="max-w-7xl mx-auto">
@@ -49,7 +107,7 @@ export default function RecentOpportunities() {
         <div className="grid md:grid-cols-3 gap-8">
           {opportunities.map((opp, index) => (
             <motion.div
-              key={index}
+              key={opp.title + index}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -64,6 +122,9 @@ export default function RecentOpportunities() {
                     src={opp.image}
                     alt={opp.title}
                     className="w-full h-full object-fit transition-transform duration-500 group-hover:scale-110"
+                    onError={(e) => {
+                      e.currentTarget.src = "/ann.png"; // fallback
+                    }}                    
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
@@ -93,15 +154,21 @@ export default function RecentOpportunities() {
                   </div>
 
                   <Button
-                    disabled
-                    className="w-full bg-pink-100 text-pink-700 hover:bg-pink-200 cursor-not-allowed font-semibold rounded-full"
+                    disabled={opp.soldOut}
+                    className={`w-full font-semibold rounded-full transition-all ${
+                      opp.soldOut
+                        ? "bg-pink-100 text-pink-700 hover:bg-pink-200 cursor-not-allowed"
+                        : "bg-purple-600 hover:bg-purple-700 text-white"
+                    }`}
                   >
-                    Sold Out
+                    {opp.soldOut ? "Sold Out" : "Invest Now"}
                   </Button>
 
-                  <Badge className="absolute top-4 right-4 bg-red-500 text-white animate-pulse shadow-lg">
-                    SOLD OUT
-                  </Badge>
+                  {opp.soldOut && (
+                    <Badge className="absolute top-4 right-4 bg-red-500 text-white animate-pulse shadow-lg">
+                      SOLD OUT
+                    </Badge>
+                  )}
                 </div>
               </Card>
             </motion.div>
